@@ -1,0 +1,8 @@
+(compile -s -O3 -d1 osc.scm -j osc)
+(compile -s -O3 -d0 osc.import.scm)
+  
+(install-extension
+  'osc
+  '("osc.so" "osc.import.so")
+  '((version 0.1)))
+

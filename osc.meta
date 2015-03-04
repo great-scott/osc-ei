@@ -1,0 +1,16 @@
+(
+  ; license
+  (license "MIT")
+  
+  ; category
+  (category net)
+  
+  ; egg dependencies
+  (needs udp6)
+  
+  ; test dependencies
+  (test-depends test)
+  
+  (author "Scott")
+  (synopsis "Open Sound Control Library"))
+
