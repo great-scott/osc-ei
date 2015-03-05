@@ -1,0 +1,6 @@
+;
+;
+;
+
+(load-relative "./encode.scm")
+
