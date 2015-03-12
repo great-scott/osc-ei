@@ -12,7 +12,6 @@
    osc-connect
    osc-send
    osc-close
-   server
    )
 
   (import chicken scheme)
@@ -97,7 +96,7 @@
                (append encoded-address encoded-type encoded-message)))
         (udp-send socket (list->s8->blob encoded)))))
 
-  (define close
+  (define osc-close
     (lambda ()
       (udp-close-socket socket)
       (set! socket '())
