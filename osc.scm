@@ -97,8 +97,10 @@
                (append encoded-address encoded-type encoded-message)))
         (udp-send socket (list->s8->blob encoded)))))
 
-  (define (close)
-    (udp-close-socket socket)
-    (print "Closing socket..."))
+  (define close
+    (lambda ()
+      (udp-close-socket socket)
+      (set! socket '())
+      (print "Closing socket...")))
 
   )
