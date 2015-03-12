@@ -9,9 +9,11 @@
    encode-str
    encode-float
    encode-type
-   connect
-   send
-   close)
+   osc-connect
+   osc-send
+   osc-close
+   server
+   )
 
   (import chicken scheme)
   (use srfi-1 srfi-4 udp6)
@@ -76,7 +78,7 @@
                        (map char->integer str))))
       (pad (append converted '(0)))))
 
-  (define (connect port)
+  (define (osc-connect port)
     (if (not (null? socket))
       (udp-close-socket socket))
 
@@ -84,7 +86,7 @@
     (udp-connect! socket "localhost" port)
     (print "Connected..."))
 
-  (define (send . body)
+  (define (osc-send . body)
     (let ((address (car body))
           (message (cdr body)))
       
