@@ -2,8 +2,8 @@
 ; encode.scm
 ;
 
-(use test)
-(use osc)
+(use test s48-modules)
+(include-relative "../encode.scm")
 
 (define (last-byte buf)
   (list-ref buf (- (length buf) 1)))
@@ -14,7 +14,7 @@
 
 
 (test "encode basic string"
-      '(104 97 108 108 111 0 0 0) 
+      '(104 97 108 108 111 0 0 0)
       (encode-str "hallo"))
 
 (test "check that string ends with zero"
@@ -23,7 +23,7 @@
 
 (test "length is a multiple of four"
       0
-      (modulo (length (encode-str "somethingfoobar")) 4)) 
+      (modulo (length (encode-str "somethingfoobar")) 4))
 
 (test "string type length is multiple of four"
       0

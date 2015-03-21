@@ -6,19 +6,15 @@
 (module
   osc
   ; declarations
-  (encode-int
-   encode-str
-   encode-float
-   encode-type
-   osc-connect
+  (osc-connect
    osc-send
    osc-close
    )
 
   (import chicken scheme)
-  (use udp6)
+  (use udp6 s48-modules)
 
-  (include "encode.scm")
+  (include-relative "encode.scm")
 
   (define socket '())
 

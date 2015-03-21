@@ -1,16 +1,16 @@
 (
   ; license
   (license "MIT")
-  
+
   ; category
   (category net)
-  
+
   ; egg dependencies
-  (needs udp6)
-  
+  (needs udp6 s48-modules)
+
   ; test dependencies
-  (test-depends test)
-  
+  (test-depends test s48-modules)
+
   (author "Scott")
   (synopsis "Open Sound Control Library"))
 
