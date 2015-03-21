@@ -25,7 +25,7 @@
       0
       (modulo (length (encode-str "somethingfoobar")) 4)) 
 
-(test ""
+(test "string type length is multiple of four"
       0
       (modulo (length (encode-str ",s")) 4))
 
