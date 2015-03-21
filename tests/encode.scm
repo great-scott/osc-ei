@@ -2,8 +2,8 @@
 ; encode.scm
 ;
 
-(load-relative "../osc.scm")
-(use osc test)
+(use test)
+(use osc)
 
 (define (last-byte buf)
   (list-ref buf (- (length buf) 1)))
@@ -25,7 +25,7 @@
       0
       (modulo (length (encode-str "somethingfoobar")) 4)) 
 
-(test ""
+(test "string type length is multiple of four"
       0
       (modulo (length (encode-str ",s")) 4))
 
