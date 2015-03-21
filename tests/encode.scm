@@ -2,8 +2,8 @@
 ; encode.scm
 ;
 
-(load-relative "../osc.scm")
-(use osc test)
+(use test)
+(use osc)
 
 (define (last-byte buf)
   (list-ref buf (- (length buf) 1)))
