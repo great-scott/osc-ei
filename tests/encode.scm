@@ -12,6 +12,7 @@
 (define ENC-INT (encode-str ",i"))
 (define ENC-FLOAT (encode-str ",f"))
 
+(test-begin "encode-tests")
 
 (test "encode basic string"
       '(104 97 108 108 111 0 0 0)
@@ -49,5 +50,4 @@
       (encode-str ",siif")
       (encode-type '("hi" 1 28 -0.53)))
 
-(test-exit)
-
+(test-end "encode-tests")
