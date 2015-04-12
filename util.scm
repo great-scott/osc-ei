@@ -13,8 +13,11 @@
   (s8vector->blob (list->s8vector stuff)))
 
 
+(define (get-padding-amount buffer)
+  (- 4 (modulo (length buffer) 4)))
+
 (define (pad buffer)
-  (let ((extra (- 4 (modulo (length buffer) 4))))
+  (let ((extra (get-padding-amount buffer)))
    (if (< extra 4)
      (append buffer (make-list extra 0))
      buffer)))
