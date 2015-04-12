@@ -53,11 +53,24 @@
 
 
 (define (split items token)
-  (let ((reversed-list (reverse items)))
-   (reverse
-     (let inner-loop ((rl reversed-list))
-      (let ((check-against (car rl)))
-       (if (or (null? rl) (equal? check-against token))
-         '()
-         (cons check-against (inner-loop (cdr rl)))))))))
+  (let ((up-till (collect-till items token))
+        (from (reverse (collect-till (reverse items) token))))
+    (list up-till from)))
+
+
+(define (collect-till items token)
+  (let inner-loop ((l items))
+   (let ((check-against (car l)))
+    (if (or (null? l) (equal? check-against token))
+      '()
+      (cons check-against (inner-loop (cdr l)))))))
+
+
+(define (split-string-preserve-alignment items token)
+  (let* ((raw-split (split items token))
+         (str (car raw-split))
+         (padding (- (length str) (modulo (length str) 4) 1))
+         (rest (slice items (+ (length str) padding) (length items))))
+    (list str rest)))
+
 
