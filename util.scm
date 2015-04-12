@@ -51,3 +51,13 @@
         (car remaining-items)
         (remove-end (cdr remaining-items) (+ start-index 1)))))))
 
+
+(define (split items token)
+  (let ((reversed-list (reverse items)))
+   (reverse
+     (let inner-loop ((rl reversed-list))
+      (let ((check-against (car rl)))
+       (if (or (null? rl) (equal? check-against token))
+         '()
+         (cons check-against (inner-loop (cdr rl)))))))))
+

@@ -13,6 +13,14 @@
         (lambda (x) (not (char=? #\null x)))
         final))))
 
+(define (decode-type normalized-input)
+  (let* ((l (map integer->char normalized-input))
+         (rest (split l #\,)))
+    (let find-types ((types rest))
+     (if (char=? (car types) #\null)
+       '()
+       (cons (car types) (find-types (cdr types)))))))
+
 (define (split-address items)
   (if (null? items)
     '()
