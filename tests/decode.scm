@@ -49,4 +49,8 @@
         (list 104 97 108 108 111 0 0 0 64 136 0 0 0 0 2 72)
         (list #\s #\f #\i)))
 
+(test "decode entire address and message"
+      (list "/freq" 584)
+      (decode-packet (list 47 102 114 101 113 0 0 0 44 105 0 0 0 0 2 72)))
+
 (test-end "decode-tests")

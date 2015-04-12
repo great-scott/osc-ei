@@ -5,6 +5,18 @@
 (use s48-modules)
 (include-relative "util.scm")
 
+(define (decode-packet normalized-input)
+  (let* ((s (split normalized-input 44))
+         (address (decode-str (car s)))
+         (types (decode-type normalized-input))
+         (padding (get-padding-amount types))
+         (message (decode-message
+                    (slice (cadr s) padding (length (cadr s)))
+                    types)))
+
+      (append (list address) message)))
+
+
 (define (decode-address normalized-input)
   (decode-str normalized-input))
 
