@@ -74,7 +74,7 @@
 (define (split-string-preserve-alignment items token)
   (let* ((raw-split (split items token))
          (str (car raw-split))
-         (padding (- (length str) (modulo (length str) 4) 1))
+         (padding (get-padding-amount str))
          (rest (slice items (+ (length str) padding) (length items))))
     (list str rest)))
 

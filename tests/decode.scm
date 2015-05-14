@@ -57,4 +57,11 @@
       (list "/freq" 440 39)
       (decode-packet (list 47 102 114 101 113 0 0 0 44 105 105 0 0 0 1 184 0 0 0 39)))
 
+(test "decode entire packet with multiple strings"
+      (list "/filter" "hallo" "foo" "bar")
+      (decode-packet
+        (list 47 102 105 108 116 101 114 0
+              44 115 115 115 0 0 0 0 104 97
+              108 108 111 0 0 0 102 111 111 0 98 97 114 0)))
+
 (test-end "decode-tests")
