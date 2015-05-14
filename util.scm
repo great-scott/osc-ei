@@ -57,7 +57,9 @@
 
 (define (split items token)
   (let ((up-till (collect-till items token))
-        (from (reverse (collect-till (reverse items) token))))
+        (from
+          (reverse
+            (append (collect-till (reverse items) token) (list token)))))
     (list up-till from)))
 
 

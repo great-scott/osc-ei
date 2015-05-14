@@ -53,4 +53,8 @@
       (list "/freq" 584)
       (decode-packet (list 47 102 114 101 113 0 0 0 44 105 0 0 0 0 2 72)))
 
+(test "decode entire packet with multiple messages"
+      (list "/freq" 440 39)
+      (decode-packet (list 47 102 114 101 113 0 0 0 44 105 105 0 0 0 1 184 0 0 0 39)))
+
 (test-end "decode-tests")

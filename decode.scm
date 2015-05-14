@@ -9,9 +9,11 @@
   (let* ((s (split normalized-input 44))
          (address (decode-str (car s)))
          (types (decode-type normalized-input))
-         (padding (get-padding-amount types))
+         (padding (get-padding-amount (append (list ",") types)))
          (message (decode-message
-                    (slice (cadr s) padding (length (cadr s)))
+                    (slice (cadr s)
+                           (+ 1 (length types) padding)
+                           (length (cadr s)))
                     types)))
 
       (append (list address) message)))
@@ -23,7 +25,7 @@
 
 (define (decode-type normalized-input)
   (let* ((l (map integer->char normalized-input))
-         (rest (cadr (split l #\,))))
+         (rest (cdr (cadr (split l #\,)))))
     (let find-types ((types rest))
      (if (char=? (car types) #\null)
        '()
