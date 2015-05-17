@@ -9,7 +9,7 @@
   (osc-connect
    osc-send
    osc-close
-   osc-receive
+   osc-listen
    )
 
   (import chicken scheme)
@@ -44,7 +44,7 @@
       (print "Closing socket...")))
 
 
-  (define (osc-receive socket)
+  (define (osc-listen socket)
     (thread-start!
       (lambda ()
         (let loop ()
