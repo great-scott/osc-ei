@@ -38,6 +38,10 @@
 (define (decode-float normalized-input)
   (transform-to-type f32vector->list blob->f32vector normalized-input))
 
+(define (decode-double normalized-input)
+  (transform-to-type f64vector->list blob->f64vector normalized-input))
+
+
 (define (list->reversed-blob input)
   (u8vector->blob (list->u8vector (reverse input))))
 
@@ -64,17 +68,23 @@
              (if (equal? type #\s)
                (split-string-preserve-alignment normalized-input 0)
                ((lambda (i)
-                  (list (slice i 0 4)
-                        (slice i 4 (length i))))
+                  (list (slice i 0 (get-type-length type))
+                        (slice i (get-type-length type) (length i))))
                 normalized-input))))
       (cons
         (decode-fn (car to-decode))
         (decode-message (cadr to-decode) (cdr types))))))
 
+(define (get-type-length type)
+ (cond
+    ((equal? type #\i) 4)
+    ((equal? type #\d) 8)
+    ((equal? type #\f) 4)))
 
 (define (get-type-decode-fn arg)
   (cond
     ((equal? arg #\i) decode-int)
+    ((equal? arg #\d) decode-double)
     ((equal? arg #\s) decode-str)
     ((equal? arg #\f) decode-float)))
 
