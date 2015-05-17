@@ -33,9 +33,9 @@
       (let* ((encoded-address (encode-str address))
              (encoded-message (collect-messages message))
              (encoded-type (encode-type message))
-             (encoded
-               (append encoded-address encoded-type encoded-message)))
-        (udp-send socket (list->s8->blob encoded)))))
+             (encoded (list->s8->blob (append encoded-address encoded-type encoded-message))))
+
+        (udp-send socket encoded))))
 
 
   (define osc-close
