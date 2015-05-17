@@ -7,6 +7,7 @@
   osc
   ; declarations
   (osc-connect
+   osc-server
    osc-send
    osc-close
    osc-listen
@@ -24,7 +25,15 @@
      (udp-connect! socket "localhost" port)
      (print "Connected..." (udp-bound-port socket))
 
-    socket))
+     socket))
+
+
+  (define (osc-server port)
+    (let ((socket (udp-open-socket)))
+     (udp-bind! socket "localhost" port)
+
+     socket))
+
 
   (define (osc-send socket . body)
     (let ((address (car body))
