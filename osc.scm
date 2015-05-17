@@ -13,7 +13,7 @@
    )
 
   (import chicken scheme)
-  (use udp6 s48-modules)
+  (use udp6 s48-modules srfi-18)
 
   (include-relative "encode.scm")
   (include-relative "decode.scm")
