@@ -33,20 +33,16 @@
 
 
 (define (decode-int normalized-input)
-  (car
-   (s32vector->list
-    (blob->s32vector
-      (u8vector->blob
-        (list->u8vector (reverse normalized-input)))))))
-
+  (transform-to-type s32vector->list blob->s32vector normalized-input))
 
 (define (decode-float normalized-input)
-  (car
-    (f32vector->list
-      (blob->f32vector
-      (u8vector->blob
-        (list->u8vector (reverse normalized-input)))))))
+  (transform-to-type f32vector->list blob->f32vector normalized-input))
 
+(define (list->reversed-blob input)
+  (u8vector->blob (list->u8vector (reverse input))))
+
+(define (transform-to-type vec->list blob->vec input)
+  (car (vec->list (blob->vec (list->reversed-blob input)))))
 
 (define (decode-str normalized-input)
    (list->string
