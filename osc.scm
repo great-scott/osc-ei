@@ -9,12 +9,14 @@
   (osc-connect
    osc-send
    osc-close
+   osc-receive
    )
 
   (import chicken scheme)
   (use udp6 s48-modules)
 
   (include-relative "encode.scm")
+  (include-relative "decode.scm")
 
 
   (define (osc-connect port)
@@ -40,5 +42,14 @@
     (lambda (socket)
       (udp-close-socket socket)
       (print "Closing socket...")))
+
+
+  (define (osc-receive socket)
+    (thread-start!
+      (lambda ()
+        (let loop ()
+         (let ((received (udp-recv socket 1024)))
+          (print (decode-packet (map char->integer (string->list received)))))
+         (loop)))))
 
   )
