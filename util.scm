@@ -56,10 +56,9 @@
 
 
 (define (split items token)
-  (let ((up-till (collect-till items token))
-        (from
-          (reverse
-            (append (collect-till (reverse items) token) (list token)))))
+  (let* ((up-till (collect-till items token))
+         (len (length up-till))
+         (from (slice items len (length items))))
     (list up-till from)))
 
 
