@@ -9,41 +9,47 @@
   (osc-connect
    osc-send
    osc-close
+   osc-receive
    )
 
   (import chicken scheme)
   (use udp6 s48-modules)
 
   (include-relative "encode.scm")
-
-  (define socket '())
+  (include-relative "decode.scm")
 
 
   (define (osc-connect port)
-    (if (not (null? socket))
-      (udp-close-socket socket))
+    (let ((socket (udp-open-socket)))
+     (udp-connect! socket "localhost" port)
+     (print "Connected..." (udp-bound-port socket))
 
-    (set! socket (udp-open-socket))
-    (udp-connect! socket "localhost" port)
-    (print "Connected..."))
+    socket))
 
-
-  (define (osc-send . body)
+  (define (osc-send socket . body)
     (let ((address (car body))
           (message (cdr body)))
 
       (let* ((encoded-address (encode-str address))
              (encoded-message (collect-messages message))
              (encoded-type (encode-type message))
-             (encoded
-               (append encoded-address encoded-type encoded-message)))
-        (udp-send socket (list->s8->blob encoded)))))
+             (encoded (list->s8->blob (append encoded-address encoded-type encoded-message))))
+
+        (udp-send socket encoded))))
 
 
   (define osc-close
-    (lambda ()
+    (lambda (socket)
       (udp-close-socket socket)
-      (set! socket '())
       (print "Closing socket...")))
+
+
+  (define (osc-receive socket)
+    (thread-start!
+      (lambda ()
+        (let loop ()
+         (let ((received (udp-recv socket 1024)))
+          (print (decode-packet (map char->integer (string->list received)))))
+         (loop)))))
 
   )

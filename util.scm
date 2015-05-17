@@ -56,8 +56,9 @@
 
 
 (define (split items token)
-  (let ((up-till (collect-till items token))
-        (from (reverse (collect-till (reverse items) token))))
+  (let* ((up-till (collect-till items token))
+         (len (length up-till))
+         (from (slice items len (length items))))
     (list up-till from)))
 
 
@@ -72,7 +73,7 @@
 (define (split-string-preserve-alignment items token)
   (let* ((raw-split (split items token))
          (str (car raw-split))
-         (padding (- (length str) (modulo (length str) 4) 1))
+         (padding (get-padding-amount str))
          (rest (slice items (+ (length str) padding) (length items))))
     (list str rest)))
 

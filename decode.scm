@@ -9,9 +9,11 @@
   (let* ((s (split normalized-input 44))
          (address (decode-str (car s)))
          (types (decode-type normalized-input))
-         (padding (get-padding-amount types))
+         (padding (get-padding-amount (append (list ",") types)))
          (message (decode-message
-                    (slice (cadr s) padding (length (cadr s)))
+                    (slice (cadr s)
+                           (+ 1 (length types) padding)
+                           (length (cadr s)))
                     types)))
 
       (append (list address) message)))
@@ -23,7 +25,7 @@
 
 (define (decode-type normalized-input)
   (let* ((l (map integer->char normalized-input))
-         (rest (cadr (split l #\,))))
+         (rest (cdr (cadr (split l #\,)))))
     (let find-types ((types rest))
      (if (char=? (car types) #\null)
        '()
@@ -31,20 +33,20 @@
 
 
 (define (decode-int normalized-input)
-  (car
-   (s32vector->list
-    (blob->s32vector
-      (u8vector->blob
-        (list->u8vector (reverse normalized-input)))))))
-
+  (transform-to-type s32vector->list blob->s32vector normalized-input))
 
 (define (decode-float normalized-input)
-  (car
-    (f32vector->list
-      (blob->f32vector
-      (u8vector->blob
-        (list->u8vector (reverse normalized-input)))))))
+  (transform-to-type f32vector->list blob->f32vector normalized-input))
 
+(define (decode-double normalized-input)
+  (transform-to-type f64vector->list blob->f64vector normalized-input))
+
+
+(define (list->reversed-blob input)
+  (u8vector->blob (list->u8vector (reverse input))))
+
+(define (transform-to-type vec->list blob->vec input)
+  (car (vec->list (blob->vec (list->reversed-blob input)))))
 
 (define (decode-str normalized-input)
    (list->string
@@ -66,17 +68,23 @@
              (if (equal? type #\s)
                (split-string-preserve-alignment normalized-input 0)
                ((lambda (i)
-                  (list (slice i 0 4)
-                        (slice i 4 (length i))))
+                  (list (slice i 0 (get-type-length type))
+                        (slice i (get-type-length type) (length i))))
                 normalized-input))))
       (cons
         (decode-fn (car to-decode))
         (decode-message (cadr to-decode) (cdr types))))))
 
+(define (get-type-length type)
+ (cond
+    ((equal? type #\i) 4)
+    ((equal? type #\d) 8)
+    ((equal? type #\f) 4)))
 
 (define (get-type-decode-fn arg)
   (cond
     ((equal? arg #\i) decode-int)
+    ((equal? arg #\d) decode-double)
     ((equal? arg #\s) decode-str)
     ((equal? arg #\f) decode-float)))
 
