@@ -16,19 +16,15 @@
 
   (include-relative "encode.scm")
 
-  (define socket '())
-
 
   (define (osc-connect port)
-    (if (not (null? socket))
-      (udp-close-socket socket))
+    (let ((socket (udp-open-socket)))
+     (udp-connect! socket "localhost" port)
+     (print "Connected..." (udp-bound-port socket))
 
-    (set! socket (udp-open-socket))
-    (udp-connect! socket "localhost" port)
-    (print "Connected..."))
+    socket))
 
-
-  (define (osc-send . body)
+  (define (osc-send socket . body)
     (let ((address (car body))
           (message (cdr body)))
 
@@ -41,9 +37,8 @@
 
 
   (define osc-close
-    (lambda ()
+    (lambda (socket)
       (udp-close-socket socket)
-      (set! socket '())
       (print "Closing socket...")))
 
   )
