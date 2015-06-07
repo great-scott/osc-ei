@@ -14,11 +14,13 @@
    )
 
   (import chicken scheme)
-  (use udp6 s48-modules srfi-18)
+  (use udp6 socket s48-modules srfi-18)
 
   (include-relative "encode.scm")
   (include-relative "decode.scm")
 
+  ; make sure that there is no receive timeout
+  (set! socket-receive-timeout #f)
 
   (define (osc-connect port)
     (let ((socket (udp-open-socket)))
