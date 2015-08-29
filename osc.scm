@@ -19,8 +19,6 @@
   (include-relative "encode.scm")
   (include-relative "decode.scm")
 
-  ; make sure that there is no receive timeout
-  (set! socket-receive-timeout #f)
 
   (define (osc-connect port)
     (let ((socket (udp-open-socket)))
@@ -59,8 +57,11 @@
     (thread-start!
       (lambda ()
         (let loop ()
-         (let ((received (udp-recv socket 1024)))
-          (print (decode-packet (map char->integer (string->list received)))))
+         (if (socket-receive-ready? socket)
+             (let* ((received (udp-recv socket 1024))
+                    (decoded (decode-packet (map char->integer (string->list received)))))
+               (print decoded)
+             (thread-sleep! 0.05))
          (loop)))))
 
   )
