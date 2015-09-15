@@ -1,11 +1,11 @@
-;
-; osc.scm
-;
+;;
+;; osc.scm
+;;
 
 
 (module
   osc
-  ; declarations
+  ;; declarations
   (osc-connect
    osc-server
    osc-send
@@ -58,22 +58,22 @@
     (thread-start!
       (lambda ()
         (let loop ()
-         (if (socket-receive-ready? socket)
-             (let* ((received (udp-recv socket 1024))
-                    (decoded (decode-packet (map char->integer (string->list received)))))
-               (print decoded)
-             (thread-sleep! 0.05))
-			 (loop))))))
+          (if (socket-receive-ready? socket)
+              (let* ((received (udp-recv socket 1024))
+                     (decoded (decode-packet (map char->integer (string->list received)))))
+                (print decoded)
+                (thread-sleep! 0.05))
+              (loop))))))
 
   (define (osc-listen-and-call socket proc)
-	(thread-start!
-	 (lambda ()
-	   (let loop ()
+    (thread-start!
+     (lambda ()
+       (let loop ()
          (if (socket-receive-ready? socket)
              (let* ((received (udp-recv socket 1024))
                     (decoded (decode-packet (map char->integer (string->list received)))))
                (print decoded)
-			   (proc decoded)
-			   (thread-sleep! 0.05))
-			 (loop))))))
+               (proc decoded)
+               (thread-sleep! 0.05))
+             (loop))))))
 )
