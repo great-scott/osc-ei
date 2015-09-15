@@ -11,6 +11,7 @@
    osc-send
    osc-close
    osc-listen
+   osc-listen-and-call
    )
 
   (import chicken scheme)
@@ -62,6 +63,17 @@
                     (decoded (decode-packet (map char->integer (string->list received)))))
                (print decoded)
              (thread-sleep! 0.05))
-         (loop)))))
+			 (loop))))))
 
-  )
+  (define (osc-listen-and-call socket proc)
+	(thread-start!
+	 (lambda ()
+	   (let loop ()
+         (if (socket-receive-ready? socket)
+             (let* ((received (udp-recv socket 1024))
+                    (decoded (decode-packet (map char->integer (string->list received)))))
+               (print decoded)
+			   (proc decoded)
+			   (thread-sleep! 0.05))
+			 (loop))))))
+)
