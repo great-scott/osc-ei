@@ -1,6 +1,13 @@
 # osc-ei
 Open Sound Control library for Chicken Scheme
 
+### Building
+
+```sh
+csc -s ./osc.setup
+chicken-install
+```
+
 ### api
 This is a work in progress, so it's possible the api will change.
 
@@ -26,7 +33,7 @@ This is a work in progress, so it's possible the api will change.
 (define client-socket (osc-connect 8000))
 (define server-socket (osc-server 8000))
 
-(osc-listen server-socket)
+(osc-listen-and-call server-socket (lambda (msg) (print msg))
 
 (osc-send client-socket "/freq" 440)
 
