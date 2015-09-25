@@ -5,6 +5,11 @@
 (use s48-modules)
 (include-relative "util.scm")
 
+
+(define (decode-packet-unnormalized input)
+  (decode-packet (map char->integer (string->list input))))
+
+
 (define (decode-packet normalized-input)
   (let* ((s (split normalized-input 44))
          (address (decode-str (car s)))
