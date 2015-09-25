@@ -62,11 +62,11 @@
     (thread-start!
      (lambda ()
        (let loop ()
+        (thread-sleep! 0.05)
          (if (socket-receive-ready? socket)
              (let* ((received (udp-recv socket 1024))
                     (decoded (decode-packet (map char->integer (string->list received)))))
                (proc decoded))
              )
-         (thread-sleep! 0.05)
          (loop)))))
 )
