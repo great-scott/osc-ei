@@ -22,6 +22,10 @@ This is a work in progress, so it's possible the api will change.
 ; the socket's port is not the port used in (osc-connect port)
 [procedure] (osc-listen socket)
 
+; similar to the bare osc-listen procedure, but always calls the
+; input procedure
+[procedure] (osc-listen-and-call socket procedure)
+
 ; closes socket
 [procedure] (osc-close socket)
 ```
