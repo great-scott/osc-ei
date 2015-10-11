@@ -79,7 +79,7 @@
                     '()))))
       (if (not (null? (fn pattern)))
           (if (procedure? (fn pattern))
-              (apply (fn pattern) args)
+              (apply (fn pattern) (list args))
               ((eval (fn pattern)) args)))))
 
 
