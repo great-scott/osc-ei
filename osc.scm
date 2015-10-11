@@ -58,36 +58,17 @@
       (print "Closing socket...")))
 
 
-  (define (osc-listen socket)
-    (osc-listen-and-call socket (lambda (arg) arg)))
-
-
-  (define (osc-listen-and-call socket proc)
-    (thread-start!
-     (lambda ()
-       (let loop ()
-        (thread-sleep! 0.05)
-         (if (socket-receive-ready? socket)
-             (let* ((received (udp-recv socket 1024))
-                    (decoded (decode-packet-unnormalized received)))
-               (evaluate-listener decoded)
-               (proc decoded)))
-         (loop)))))
-
-
-  (define register-listener (make-register-listener-fn listener-table))
-
   ;;--------------------------------------------
 
   (define (make-register-listener-fn table)
     (lambda (pattern fn)
       (hash-table-set! table pattern fn)))
 
-  (define evaluate-listener (make-evaluate-listener-fn listener-table))
-
   (define (make-evaluate-listener-fn table)
     (lambda (input)
         (evaluate-listener-with-table input table)))
+
+  (define evaluate-listener (make-evaluate-listener-fn listener-table))
 
   (define (evaluate-listener-with-table input table)
     (let* ((pattern (car input))
@@ -98,6 +79,27 @@
                     '()))))
       (if (not (null? (fn pattern)))
           (if (procedure? (fn pattern))
-              (apply (fn pattern) args)
+              (apply (fn pattern) (list args))
               ((eval (fn pattern)) args)))))
+
+
+  (define (osc-listen socket)
+    (osc-listen-and-call socket (lambda (arg) arg)))
+
+
+  (define (osc-listen-and-call socket proc)
+    (thread-start!
+     (lambda ()
+       (let loop ()
+        (if (socket-receive-ready? socket)
+            (let* ((received (udp-recv socket 1024))
+                   (decoded (decode-packet-unnormalized received)))
+              (evaluate-listener decoded)
+              (proc decoded)
+              (loop)))
+        (thread-sleep! 0.05)
+        (loop)))))
+
+
+  (define register-listener (make-register-listener-fn listener-table))
 )
