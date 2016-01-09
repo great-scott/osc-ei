@@ -16,11 +16,14 @@
    )
 
   (import chicken scheme)
-  (use udp6 socket s48-modules srfi-18 srfi-69)
+  (use udp6 socket s48-modules srfi-18 srfi-69 records)
 
   (include-relative "encode.scm")
   (include-relative "decode.scm")
 
+
+  ; alias thread for our listener and associate it with socket
+  (define-record osc-listener socket thread)
 
   ; main listener table
   (define listener-table (make-hash-table))
@@ -88,17 +91,19 @@
 
 
   (define (osc-listen-and-call socket proc)
-    (thread-start!
-     (lambda ()
-       (let loop ()
-        (if (socket-receive-ready? socket)
-            (let* ((received (udp-recv socket 1024))
-                   (decoded (decode-packet-unnormalized received)))
-              (evaluate-listener decoded)
-              (proc decoded)
-              (loop)))
-        (thread-sleep! 0.05)
-        (loop)))))
+    (make-osc-listener
+      socket
+      (thread-start!
+        (lambda ()
+          (let loop ()
+           (if (and (udp-bound? socket) (socket-receive-ready? socket))
+               (let* ((received (udp-recv socket 1024))
+                      (decoded (decode-packet-unnormalized received)))
+                 (evaluate-listener decoded)
+                 (proc decoded)
+                 (loop)))
+           (thread-sleep! 0.05)
+           (loop))))))
 
 
   (define register-listener (make-register-listener-fn listener-table))
