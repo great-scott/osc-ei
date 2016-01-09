@@ -60,15 +60,12 @@
       (print "Closing socket...")))
 
 
-  (define (make-register-listener-fn table)
-    (lambda (pattern fn)
-      (hash-table-set! table pattern fn)))
-
   (define (make-evaluate-listener-fn table)
     (lambda (input)
-        (evaluate-listener-with-table input table)))
+      (evaluate-listener-with-table input table)))
 
   (define evaluate-listener (make-evaluate-listener-fn listener-table))
+
 
   (define (evaluate-listener-with-table input table)
     (let* ((pattern (car input))
@@ -101,6 +98,11 @@
                  (loop)))
            (thread-sleep! 0.05)
            (loop))))))
+
+
+  (define (make-register-listener-fn table)
+    (lambda (pattern fn)
+      (hash-table-set! table pattern fn)))
 
 
   (define register-listener (make-register-listener-fn listener-table))
