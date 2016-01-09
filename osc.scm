@@ -42,16 +42,18 @@
      socket))
 
 
-  (define (osc-send socket . body)
-    (let ((address (car body))
-          (message (cdr body)))
+  (define (osc-send socket messages)
+    (for-each
+     (lambda (body)
+       (let ((address (car body))
+             (message (cdr body)))
 
-      (let* ((encoded-address (encode-str address))
-             (encoded-message (collect-messages message))
-             (encoded-type (encode-type message))
-             (encoded (list->s8->blob (append encoded-address encoded-type encoded-message))))
-
-        (udp-send socket encoded))))
+         (let* ((encoded-address (encode-str address))
+                (encoded-message (collect-messages message))
+                (encoded-type (encode-type message))
+                (encoded (list->s8->blob (append encoded-address encoded-type encoded-message))))
+                (udp-send socket encoded))))
+     messages))
 
 
   (define osc-close
