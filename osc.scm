@@ -20,6 +20,7 @@
 
   (include-relative "encode.scm")
   (include-relative "decode.scm")
+  (include-relative "util.scm")
 
   ;; alias thread for our listener and associate it with socket
   (define-record osc-listener socket thread)
@@ -42,18 +43,21 @@
      socket))
 
 
-  (define (osc-send socket messages)
-    (for-each
-     (lambda (body)
-       (let ((address (car body))
-             (message (cdr body)))
+  (define (encode-and-send socket body)
+    (let ((address (car body))
+          (message (cdr body)))
 
-         (let* ((encoded-address (encode-str address))
-                (encoded-message (collect-messages message))
-                (encoded-type (encode-type message))
-                (encoded (list->s8->blob (append encoded-address encoded-type encoded-message))))
-                (udp-send socket encoded))))
-     messages))
+      (let* ((encoded-address (encode-str address))
+             (encoded-message (collect-messages message))
+             (encoded-type (encode-type message))
+             (encoded (list->s8->blob (append encoded-address encoded-type encoded-message))))
+        (udp-send socket encoded))))
+
+
+  (define (osc-send socket messages)
+    (if (message? messages)
+        (encode-and-send socket messages)
+        (for-each (lambda (message) (encode-and-send socket message)) messages)))
 
 
   (define osc-close
