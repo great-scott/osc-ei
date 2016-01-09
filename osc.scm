@@ -23,7 +23,7 @@
   (include-relative "util.scm")
 
   ;; alias thread for our listener and associate it with socket
-  (define-record osc-listener socket thread)
+  (define-record osc-listener-manager socket table thread)
 
   ;; main listener table
   (define listener-table (make-hash-table))
@@ -66,14 +66,7 @@
       (print "Closing socket...")))
 
 
-  (define (make-evaluate-listener-fn table)
-    (lambda (input)
-      (evaluate-listener-with-table input table)))
-
-  (define evaluate-listener (make-evaluate-listener-fn listener-table))
-
-
-  (define (evaluate-listener-with-table input table)
+  (define (evaluate-listener table input)
     (let* ((pattern (car input))
            (args (cdr input))
            (fn  (lambda (pattern)
@@ -91,25 +84,25 @@
 
 
   (define (osc-listen-and-call socket proc)
-    (make-osc-listener
-      socket
-      (thread-start!
+    (let ((table listener-table))
+      (make-osc-listener-manager
+       socket
+       table
+       (thread-start!
         (lambda ()
           (let loop ()
-           (if (and (udp-bound? socket) (socket-receive-ready? socket))
-               (let* ((received (udp-recv socket 1024))
-                      (decoded (decode-packet-unnormalized received)))
-                 (evaluate-listener decoded)
-                 (proc decoded)
-                 (loop)))
-           (thread-sleep! 0.05)
-           (loop))))))
+            (if (and (udp-bound? socket) (socket-receive-ready? socket))
+                (let* ((received (udp-recv socket 1024))
+                       (decoded (decode-packet-unnormalized received)))
+                  (evaluate-listener table decoded)
+                  (proc decoded)
+                  (loop)))
+            (thread-sleep! 0.05)
+            (loop)))))))
 
 
-  (define (make-register-listener-fn table)
-    (lambda (pattern fn)
-      (hash-table-set! table pattern fn)))
+  (define (register-listener manager pattern callback)
+    (hash-table-set! (osc-listener-manager-table manager) pattern callback)
+    manager)
 
-
-  (define register-listener (make-register-listener-fn listener-table))
 )
