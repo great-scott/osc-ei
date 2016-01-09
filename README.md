@@ -16,7 +16,8 @@ This is a work in progress, so it's possible the api will change.
 [procedure] (osc-connect port)
 
 ; send osc formatted message (message-body) to the specified socket
-[procedure] (osc-send socket . message-body)
+; message-body can be a list or alist of messages
+[procedure] (osc-send socket message-body)
 
 ; spawns a thread to listen to messages sent to socket's internal port
 ; the socket's port is not the port used in (osc-connect port)
@@ -44,10 +45,16 @@ This is a work in progress, so it's possible the api will change.
 
 (osc-listen-and-call server-socket (lambda (msg) (print msg))
 
-(osc-send client-socket "/freq" 440)
+;; send single message
+(osc-send client-socket '("/freq" 440))
+
+;; send list of messages one after another
+(osc-send client-socket '(("/freq" 640) ("/freq" 220)))
 
 ; output
 > (/freq 440)
+> (/freq 640)
+> (/freq 220)
 ```
 
 ### listener example
@@ -64,7 +71,7 @@ This is a work in progress, so it's possible the api will change.
 ; freq-callback also works
 (register-listener "/freq" 'freq-callback)
 
-(osc-send client-socket "/freq" 440)
+(osc-send client-socket '("/freq" 440))
 
 ; output
 wooo (440)
