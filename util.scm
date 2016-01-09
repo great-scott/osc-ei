@@ -78,3 +78,5 @@
     (list str rest)))
 
 
+(define (message? possible-message-list)
+  (string? (car possible-message-list)))
