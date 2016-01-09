@@ -21,11 +21,10 @@
   (include-relative "encode.scm")
   (include-relative "decode.scm")
 
-
-  ; alias thread for our listener and associate it with socket
+  ;; alias thread for our listener and associate it with socket
   (define-record osc-listener socket thread)
 
-  ; main listener table
+  ;; main listener table
   (define listener-table (make-hash-table))
 
   (define (osc-connect port)
@@ -60,8 +59,6 @@
       (udp-close-socket socket)
       (print "Closing socket...")))
 
-
-  ;;--------------------------------------------
 
   (define (make-register-listener-fn table)
     (lambda (pattern fn)
