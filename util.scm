@@ -44,15 +44,8 @@
     ((integer? arg) #\i)))
 
 
-(define (slice items first last)
-  (let ((split-items (list-tail items first)))
-   (let remove-end ((remaining-items split-items)
-                    (start-index first))
-    (if (or (null? remaining-items) (= start-index last))
-      '()
-      (cons
-        (car remaining-items)
-        (remove-end (cdr remaining-items) (+ start-index 1)))))))
+(define (slice items begin end)
+  (take (drop items begin) (- end begin)))
 
 
 (define (split items token)
