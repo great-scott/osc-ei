@@ -16,11 +16,11 @@
    )
 
   (import chicken scheme)
-  (use udp6 socket s48-modules srfi-18 srfi-69 records)
+  (use udp6 socket srfi-18 srfi-69 records)
 
-  (include-relative "encode.scm")
-  (include-relative "decode.scm")
-  (include-relative "util.scm")
+  (include "encode.scm")
+  (include "decode.scm")
+  (include "util.scm")
 
   ;; alias thread for our listener and associate it with socket
   (define-record osc-listener-manager socket table thread)

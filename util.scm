@@ -16,6 +16,7 @@
 (define (get-padding-amount buffer)
   (- 4 (modulo (length buffer) 4)))
 
+
 (define (pad buffer)
   (let ((extra (get-padding-amount buffer)))
    (if (< extra 4)
@@ -44,30 +45,13 @@
     ((integer? arg) #\i)))
 
 
-(define (slice items first last)
-  (let ((split-items (list-tail items first)))
-   (let remove-end ((remaining-items split-items)
-                    (start-index first))
-    (if (or (null? remaining-items) (= start-index last))
-      '()
-      (cons
-        (car remaining-items)
-        (remove-end (cdr remaining-items) (+ start-index 1)))))))
+(define (slice items begin end)
+  (take (drop items begin) (- end begin)))
 
 
 (define (split items token)
-  (let* ((up-till (collect-till items token))
-         (len (length up-till))
-         (from (slice items len (length items))))
-    (list up-till from)))
-
-
-(define (collect-till items token)
-  (let inner-loop ((l items))
-   (let ((check-against (car l)))
-    (if (or (null? l) (equal? check-against token))
-      '()
-      (cons check-against (inner-loop (cdr l)))))))
+  (let ((index (list-index (lambda (item) (equal? item token)) items)))
+   (list (take items index) (drop items index))))
 
 
 (define (split-string-preserve-alignment items token)

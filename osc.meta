@@ -6,10 +6,10 @@
   (category net)
 
   ; egg dependencies
-  (needs udp6 s48-modules)
+  (needs udp6)
 
   ; test dependencies
-  (test-depends test s48-modules)
+  (test-depends test)
 
   (author "Scott")
   (synopsis "Open Sound Control Library"))

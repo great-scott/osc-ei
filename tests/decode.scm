@@ -2,8 +2,8 @@
 ; decode.scm
 ;
 
-(use test s48-modules)
-(include-relative "../decode.scm")
+(use test)
+(load-relative "../decode.scm")
 
 (test-begin "decode-tests")
 
