@@ -2,9 +2,8 @@
 ; decode.scm
 ;
 
-(use s48-modules)
-(include-relative "util.scm")
-
+(load "util.scm")
+(use srfi-4)
 
 (define (decode-packet-unnormalized input)
   (decode-packet (map char->integer (string->list input))))

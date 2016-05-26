@@ -2,8 +2,8 @@
 ; encode.scm
 ;
 
-(use s48-modules)
-(include-relative "util.scm")
+(load "util.scm")
+(use srfi-4)
 
 (define (encode-type args)
   (encode-str

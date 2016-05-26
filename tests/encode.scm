@@ -2,8 +2,8 @@
 ; encode.scm
 ;
 
-(use test s48-modules)
-(include-relative "../encode.scm")
+(use test)
+(load-relative "../encode.scm")
 
 (define (last-byte buf)
   (list-ref buf (- (length buf) 1)))
